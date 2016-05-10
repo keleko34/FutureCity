@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FutureCity.h"
-#include "ProceduralMeshComponent.h"
+#include "KismetProceduralMeshLibrary.h"
+//#include "ProceduralMeshComponent.h"
 #include "MyFirstClass.h"
 
 
@@ -11,10 +12,19 @@ AMyFirstClass::AMyFirstClass()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	#ifdef UE_BUILD_DEBUG
+		UE_LOG(LogTemp, Warning, TEXT("Constructing a procedural mesh actor."));
+	#endif
+
+
+		UProceduralMeshComponent* mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
+
+	/*
 	USphereComponent* SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponent"));
 	RootComponent = SphereComponent;
 
 	UProceduralMeshComponent* mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
+	*/
 	/**
 	*	Create/replace a section for this procedural mesh component.
 	*	@param	SectionIndex		Index of the section to create or replace.
@@ -29,48 +39,32 @@ AMyFirstClass::AMyFirstClass()
 	//UFUNCTION(BlueprintCallable, Category = "Components|ProceduralMesh", meta = (AutoCreateRefTerm = "Normals,UV0,VertexColors,Tangents"))
 	//	void CreateMeshSection(int32 SectionIndex, const TArray<FVector>& Vertices, const TArray<int32>& Triangles, const TArray<FVector>& Normals,
 	// const TArray<FVector2D>& UV0, const TArray<FColor>& VertexColors, const TArray<FProcMeshTangent>& Tangents, bool bCreateCollision);
+	
+	FVector* radius = new FVector(50,50,50);
 
-	TArray<FVector> vertices;
-
-	vertices.Add(FVector(0, 0, 0));
-	vertices.Add(FVector(0, 100, 0));
-	vertices.Add(FVector(0, 0, 100));
-
-	TArray<int32> Triangles;
-	Triangles.Add(0);
-	Triangles.Add(1);
-	Triangles.Add(2);
-
-	TArray<FVector> normals;
-	normals.Add(FVector(1, 0, 0));
-	normals.Add(FVector(1, 0, 0));
-	normals.Add(FVector(1, 0, 0));
-
-	TArray<FVector2D> UV0;
-	UV0.Add(FVector2D(0, 0));
-	UV0.Add(FVector2D(0, 10));
-	UV0.Add(FVector2D(10, 10));
-
+	TArray<FVector> *vertices = new TArray<FVector>();
+	TArray<int32> *triangles = new TArray<int32>();
+	TArray<FVector> *normals = new TArray<FVector>();
+	TArray<FVector2D> *uvs = new TArray<FVector2D>();
 	TArray<FColor> vertexColors;
-	vertexColors.Add(FColor(100, 100, 100, 100));
-	vertexColors.Add(FColor(100, 100, 100, 100));
-	vertexColors.Add(FColor(100, 100, 100, 100));
+	TArray<FProcMeshTangent>* tangents = new TArray<FProcMeshTangent>();
 
+	UKismetProceduralMeshLibrary::GenerateBoxMesh(*radius, *vertices, *triangles, *normals, *uvs, *tangents);
 
-	TArray<FProcMeshTangent> tangents;
-	tangents.Add(FProcMeshTangent(1, 1, 1));
-	tangents.Add(FProcMeshTangent(1, 1, 1));
-	tangents.Add(FProcMeshTangent(1, 1, 1));
+	UKismetProceduralMeshLibrary::CalculateTangentsForMesh(*vertices, *triangles, *uvs, *normals, *tangents);
 
+	for (int i = 0; i < vertices->Num(); i++) {
+		vertexColors.Add(FColor(100, 100, 100, 100));
+	}
 
-	mesh->CreateMeshSection(1, vertices, Triangles, normals, UV0, vertexColors, tangents, false);
+	mesh->CreateMeshSection(1, *vertices, *triangles, *normals, *uvs, vertexColors, *tangents, true);
 
 	// With default options
 	//mesh->CreateMeshSection(1, vertices, Triangles, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
 
 
 	mesh->AttachTo(RootComponent);
-
+	
 }
 
 // Called when the game starts or when spawned
