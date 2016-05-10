@@ -18,13 +18,7 @@ AMyFirstClass::AMyFirstClass()
 
 
 		UProceduralMeshComponent* mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
-
-	/*
-	USphereComponent* SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponent"));
-	RootComponent = SphereComponent;
-
-	UProceduralMeshComponent* mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
-	*/
+		RootComponent = mesh;
 	/**
 	*	Create/replace a section for this procedural mesh component.
 	*	@param	SectionIndex		Index of the section to create or replace.
@@ -44,8 +38,8 @@ AMyFirstClass::AMyFirstClass()
 
 	TArray<FVector> *vertices = new TArray<FVector>();
 	TArray<int32> *triangles = new TArray<int32>();
-	TArray<FVector> *normals = new TArray<FVector>();
-	TArray<FVector2D> *uvs = new TArray<FVector2D>();
+	TArray<FVector>* normals = new TArray<FVector>();
+	TArray<FVector2D>* uvs = new TArray<FVector2D>();
 	TArray<FColor> vertexColors;
 	TArray<FProcMeshTangent>* tangents = new TArray<FProcMeshTangent>();
 
@@ -53,17 +47,25 @@ AMyFirstClass::AMyFirstClass()
 
 	UKismetProceduralMeshLibrary::CalculateTangentsForMesh(*vertices, *triangles, *uvs, *normals, *tangents);
 
-	for (int i = 0; i < vertices->Num(); i++) {
+	int i = 0;
+
+	for (i = 0; i < vertices->Num(); i++) {
 		vertexColors.Add(FColor(100, 100, 100, 100));
+		#ifdef UE_BUILD_DEBUG
+				UE_LOG(LogTemp, Warning, TEXT("Vertice Point Created %s"), *(*vertices)[i].ToCompactString());
+		#endif
+	}
+
+	for (i = 0; i < triangles->Num(); i++) {
+		#ifdef UE_BUILD_DEBUG
+				UE_LOG(LogTemp, Warning, TEXT("traingle created %d"), (*triangles)[i]);
+		#endif
 	}
 
 	mesh->CreateMeshSection(1, *vertices, *triangles, *normals, *uvs, vertexColors, *tangents, true);
 
 	// With default options
 	//mesh->CreateMeshSection(1, vertices, Triangles, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
-
-
-	mesh->AttachTo(RootComponent);
 	
 }
 
