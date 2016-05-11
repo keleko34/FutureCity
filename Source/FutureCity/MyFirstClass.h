@@ -3,6 +3,8 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "KismetProceduralMeshLibrary.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "MyFirstClass.generated.h"
 
 UCLASS()
@@ -10,7 +12,20 @@ class FUTURECITY_API AMyFirstClass : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
+
+	/* Mesh of the street with all its lanes.*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
+	UProceduralMeshComponent* mesh;
+
+	/* Material assigned to the building.*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
+	UMaterial* material;
+
+	/* Builds a Box */
+	UFUNCTION(BlueprintCallable, Category = "Box")
+	void BuildBox(int sizeX, int sizeY, int sizeZ);
+
 	// Sets default values for this actor's properties
 	AMyFirstClass();
 

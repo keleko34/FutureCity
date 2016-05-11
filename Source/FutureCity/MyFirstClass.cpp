@@ -17,8 +17,12 @@ AMyFirstClass::AMyFirstClass()
 	#endif
 
 
-		UProceduralMeshComponent* mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
+		mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("GeneratedMesh"));
 		RootComponent = mesh;
+}
+
+void AMyFirstClass::BuildBox(int sizeX, int sizeY, int sizeZ)
+{
 	/**
 	*	Create/replace a section for this procedural mesh component.
 	*	@param	SectionIndex		Index of the section to create or replace.
@@ -33,8 +37,8 @@ AMyFirstClass::AMyFirstClass()
 	//UFUNCTION(BlueprintCallable, Category = "Components|ProceduralMesh", meta = (AutoCreateRefTerm = "Normals,UV0,VertexColors,Tangents"))
 	//	void CreateMeshSection(int32 SectionIndex, const TArray<FVector>& Vertices, const TArray<int32>& Triangles, const TArray<FVector>& Normals,
 	// const TArray<FVector2D>& UV0, const TArray<FColor>& VertexColors, const TArray<FProcMeshTangent>& Tangents, bool bCreateCollision);
-	
-	FVector* radius = new FVector(50,50,50);
+
+	FVector* radius = new FVector(sizeX, sizeY, sizeZ);
 
 	TArray<FVector> *vertices = new TArray<FVector>();
 	TArray<int32> *triangles = new TArray<int32>();
@@ -51,22 +55,21 @@ AMyFirstClass::AMyFirstClass()
 
 	for (i = 0; i < vertices->Num(); i++) {
 		vertexColors.Add(FColor(100, 100, 100, 100));
-		#ifdef UE_BUILD_DEBUG
-				UE_LOG(LogTemp, Warning, TEXT("Vertice Point Created %s"), *(*vertices)[i].ToCompactString());
-		#endif
+#ifdef UE_BUILD_DEBUG
+		UE_LOG(LogTemp, Warning, TEXT("Vertice Point Created %s"), *(*vertices)[i].ToCompactString());
+#endif
 	}
 
 	for (i = 0; i < triangles->Num(); i++) {
-		#ifdef UE_BUILD_DEBUG
-				UE_LOG(LogTemp, Warning, TEXT("traingle created %d"), (*triangles)[i]);
-		#endif
+#ifdef UE_BUILD_DEBUG
+		UE_LOG(LogTemp, Warning, TEXT("traingle created %d"), (*triangles)[i]);
+#endif
 	}
 
 	mesh->CreateMeshSection(1, *vertices, *triangles, *normals, *uvs, vertexColors, *tangents, true);
-
+	mesh->SetMaterial(0, this->material);
 	// With default options
 	//mesh->CreateMeshSection(1, vertices, Triangles, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
-	
 }
 
 // Called when the game starts or when spawned
