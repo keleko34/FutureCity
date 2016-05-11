@@ -7,7 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "KBox.generated.h"
 
-UCLASS()
+UCLASS(showCategories = ("Components|KBox"), ComponentWrapperClass)
 class FUTURECITY_API AKBox : public AActor
 {
 	GENERATED_BODY()
