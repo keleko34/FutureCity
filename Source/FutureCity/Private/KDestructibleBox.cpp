@@ -11,6 +11,9 @@ AKDestructibleBox::AKDestructibleBox()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	_DestructibleComponent = CreateDefaultSubobject<UDestructibleComponent>(TEXT("DestructibleComponent0"));
+
+	_DestructibleMesh = _DestructibleComponent->GetDestructibleMesh();
+
 	RootComponent = _DestructibleComponent;
 }
 

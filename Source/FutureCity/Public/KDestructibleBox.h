@@ -14,6 +14,7 @@ class FUTURECITY_API AKDestructibleBox : public AActor
 
 private_subobject:
 	UDestructibleComponent* _DestructibleComponent;
+	UDestructibleMesh* _DestructibleMesh;
 public:	
 	// Sets default values for this actor's properties
 	AKDestructibleBox();
